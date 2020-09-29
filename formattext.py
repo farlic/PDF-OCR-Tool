@@ -94,6 +94,9 @@ informant_name(text)
 informant_address(text)
 reg(text)
 
+#this will need stress testing against different data sets
+# to figure out how well it works
+
 gender_pattern = re.compile("( (fe)?male)",re.I) #compile makes and pattern object that re.I ignores case.
 person['name'] = gender_pattern.sub("",person['name'])
 # .sub is just a method, silly.      'replace this'.sub('with this','in this')
