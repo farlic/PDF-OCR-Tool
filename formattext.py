@@ -61,8 +61,8 @@ def pobfind(text):
 
 def address(text):
     for key,line in enumerate(text):
-        if regex.search('(usual address){e<=3}',line):
-            person['address'] = text[key+2].strip()
+        if regex.search('(informant){e<=3}',line):
+            person['address'] = text[key-1].strip()
             return
 
 def informant_name(text):
