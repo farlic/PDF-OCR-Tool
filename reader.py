@@ -6,23 +6,33 @@ pytesseract.pytesseract.tesseract_cmd = os.getcwd()+'//Tesseract-OCR//tesseract'
 
 
 pages = pdf2image.convert_from_path('input.pdf',poppler_path=os.getcwd()+'//poppler-0.68.0//bin')
+#grab page objects
 
 for index,page in enumerate(pages):
     start_time = time.time()
 
     if index > 1:
-        sys.exit()
+        sys.exit() #temp stop for >1 page
 
-
-    print(f'Saving page {index}')
-    page = page.save(f'image_{index}.jpg')
-
+    print(f'----------------------\nImage {index}')
     print('Looking for text')
-    text = pytesseract.image_to_string(f'image_{index}.jpg')
-    with open(f'output_{index}.txt','w') as f:
-        f.write(text)
 
-    #lines = [line for line in text if line.strip() !='']
+
+    text = pytesseract.image_to_string(page)
+    #grab text
+    
+    #with open(f'output_{index}.txt','w') as f:
+    #    f.write(text)
+
+    text = text.split('\n')
+    text = [line for line in text if line.strip() !='']
+    #split into lines, strip empty lines
+
+    for line in text: #temp output to see lines
+        print(line)
+
+    
+
 
     end_time = time.time()
     print(f'Time elapsed: {round(end_time-start_time)}s')
