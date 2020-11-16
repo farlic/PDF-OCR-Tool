@@ -113,3 +113,5 @@ person['district'] = person['district'][remove_districts[0][1]:remove_districts[
 
 for pair in person.items():
     print(pair) 
+
+exit = input()
