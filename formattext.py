@@ -61,8 +61,8 @@ def pobfind(text):
 
 def address(text):
     for key,line in enumerate(text):
-        if regex.search('(usual address){e<=3}',line):
-            person['address'] = text[key+2].strip()
+        if regex.search('(informant){e<=3}',line):
+            person['address'] = text[key-1].strip()
             return
 
 def informant_name(text):
@@ -93,6 +93,9 @@ address(text)
 informant_name(text)
 informant_address(text)
 reg(text)
+
+#this will need stress testing against different data sets
+# to figure out how well it works
 
 gender_pattern = re.compile("( (fe)?male)",re.I) #compile makes and pattern object that re.I ignores case.
 person['name'] = gender_pattern.sub("",person['name'])
