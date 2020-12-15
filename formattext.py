@@ -25,61 +25,61 @@ person = {
 def districtfind(text):
     for key,line in enumerate(text):
         #print(f'looking for district in line {key}')
-        if regex.search('(registration){e<=2}',line):
+        if regex.search('(?i)(?:registration){e<=2}',line):
             person['district'] = text[key].strip()
             return
 
 def dodfind(text):
     for key,line in enumerate(text):
-        if regex.search('(date and place of death){e<=3}',line):
+        if regex.search('(?i)(?:date and place of death){e<=3}',line):
             person['dod'] = text[key+1].strip()
             return
 
 def namefind(text):
     for key,line in enumerate(text):
-        if regex.search('(name and surname){e<=2}',line):
+        if regex.search('(?i)(?:name and surname){e<=2}',line):
             person['name'] = text[key+1].strip()
             return
 
 def maidenfind(text):
     for key,line in enumerate(text):
-        if regex.search('(married){e<=2}',line):
+        if regex.search('(?i)(?:married){e<=2}',line):
             person['maiden'] = text[key+1].strip()
             return
 
 def dobfind(text):
     for key,line in enumerate(text):
-        if regex.search('(date and place of birth){e<=3}',line):
+        if regex.search('(?i)(?:date and place of birth){e<=3}',line):
             person['dob'] = text[key+1].strip()
             return
 
 def pobfind(text):
     for key,line in enumerate(text):
-        if regex.search('(date and place of birth){e<=3}',line):
+        if regex.search('(?i)(?:date and place of birth){e<=3}',line):
             person['pob'] = text[key+2].strip()
             return
 
 def address(text):
     for key,line in enumerate(text):
-        if regex.search('(usual address){e<=3}',line):
+        if regex.search('(?i)(?:usual address){e<=3}',line):
             person['address'] = text[key+2].strip()
             return
 
 def informant_name(text):
     for key,line in enumerate(text):
-        if regex.search('(informant){e<=3}',line):
+        if regex.search('(?i)(?:informant){e<=3}',line):
             person['informant_name'] = text[key+1].strip()
             return
 
 def informant_address(text):
     for key,line in enumerate(text[20:]):
-        if regex.search('(usual address){e<=3}',line):
+        if regex.search('(?i)(?:usual address){e<=3}',line):
             person['informant_address'] = text[20+key+1].strip()
             return
 
 def reg(text):
     for key,line in enumerate(text):
-        if regex.search('(date of registration){e<=3}',line):
+        if regex.search('(?i)(?:date of registration){e<=3}',line):
             person['reg'] = text[key+1].strip()
             return
 
@@ -95,7 +95,8 @@ informant_address(text)
 reg(text)
 
 gender_pattern = re.compile("( (fe)?male)",re.I) #compile makes and pattern object that re.I ignores case.
-person['name'] = gender_pattern.sub("",person['name'])
+gender = gender_pattern.search(person['name'][-7:]).group(0)
+person['name'] = person['name'][:-7]+gender_pattern.sub("",person['name'][-7:])
 # .sub is just a method, silly.      'replace this'.sub('with this','in this')
 
 relative_pattern = re.compile("( (bro|mo|fa)?ther|sister|informant|causing the body to be cremated|uncle)",re.I)
