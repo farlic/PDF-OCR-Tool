@@ -1,4 +1,4 @@
-import re,pdf2image,PIL,pytesseract,time,os,math,sys
+import re,pdf2image,PIL,pytesseract,time,os,math,sys,regex,re
 from PIL import Image
 
 pytesseract.pytesseract.tesseract_cmd = os.getcwd()+'//Tesseract-OCR//tesseract'
@@ -28,7 +28,7 @@ for index,page in enumerate(pages):
     text = [line for line in text if line.strip() !='']
     #split into lines, strip empty lines
 
-    for line in text: #temp output to see lines
+    for key,line in enumerate(text): #temp output to see lines
         print(line)
 
     
