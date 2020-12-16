@@ -96,6 +96,7 @@ reg(text)
 
 gender_pattern = re.compile("( (fe)?male)",re.I) #compile makes and pattern object that re.I ignores case.
 gender = gender_pattern.search(person['name'][-7:]).group(0)
+person['gender'] = gender
 person['name'] = person['name'][:-7]+gender_pattern.sub("",person['name'][-7:])
 # .sub is just a method, silly.      'replace this'.sub('with this','in this')
 
