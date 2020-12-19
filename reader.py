@@ -49,9 +49,6 @@ for index,page in enumerate(pages):
 
     p = Person()
 
-    if index >= 1:
-        sys.exit() #temp stop for >1 page
-
     print(f'----------------------\nImage {index}')
     text = pytesseract.image_to_string(page)
     #grab text
@@ -75,30 +72,31 @@ for index,page in enumerate(pages):
             p.name = text[key+1].strip()
 
         elif regex.search('(?i)(of woman who){e<=2}',line) and len(p.maiden) == 0: #this needs fixing
-            p.maiden = text[key].strip()
+            p.maiden = text[key].strip().split(' ')[-1]
 
         elif regex.search('(?i)(date and place of birth){e<=3}',line) and len(p.dob) == 0:
             p.dob = text[key+1].strip()
             p.pob = text[key+2].strip()
 
-        elif regex.search('(?i)(date and place of birth){e<=3}',line) and len(p.pob) == 0:
-            p.pob = text[key+2].strip()
+        #elif regex.search('(?i)(date and place of birth){e<=3}',line) and len(p.pob) == 0:
+        #    p.pob = text[key+2].strip()
 
         elif regex.search('(?i)(name and surname of informant){e<=3}',line) and len(p.usual_address) == 0:
             p.usual_address = text[key-1].strip()
 
-        elif regex.search('(?i)(informant){e<=3}',line) and len(p.informant_name) == 0:
-            p.informant_name = text[key+1].strip()
+        #elif regex.search('(?i)(informant){e<=3}',line) and len(p.informant_name) == 0:
+        #    p.informant_name = text[key+1].strip()
 
         elif regex.search('(?i)(certify that){e<=3}',line) and len(p.informant_address) == 0:
             p.informant_address = text[key-1].strip()
             p.informant_name = text[key+-3].strip()
+
         elif regex.search('(?i)(date of registration){e<=3}',line) and len(p.reg_date) == 0:
             p.reg_date = text[key+1].strip()
 
         
     #cleaning scraped results
-    p.gender = gender_pattern.search(p.name[-7:]).group(0)
+    p.gender = gender_pattern.search(p.name[-7:]).group(0).strip()
     p.name = p.name[:-7]+gender_pattern.sub("",p.name[-7:])
     p.reg_date = p.reg_date[:re.search(r'\d+',p.reg_date).span()[1]]
 
@@ -110,18 +108,6 @@ for index,page in enumerate(pages):
 
     if p.gender.lower() == 'male':
         p.maiden = ''
-    #District
-    #DoD
-    #Name
-    #Gender
-    #Maiden Name
-    #DoB
-    #PoB
-    #Usual Address
-    #Informant Name
-    #Qualification
-    #Informant Address
-    #Date of Registration
 
     for items in vars(p).items():
         x = items[0]
