@@ -65,34 +65,34 @@ for index,page in enumerate(pages):
     for key,line in enumerate(text): #temp output to see lines
         #print(line)
 
-        if regex.search('(?i)(registration){e<=2}',line): #(?i) is the old regex ignore case
+        if regex.search('(?i)(registration){e<=2}',line) and len(p.district) == 0: #(?i) is the old regex ignore case
             p.district = text[key].strip()
 
-        elif regex.search('(?i)(date and place of death){e<=3}',line):# {e<3} is fuzzy match
+        elif regex.search('(?i)(date and place of death){e<=3}',line) and len(p.dod) == 0:# {e<3} is fuzzy match
             p.dod = text[key+1].strip()
 
-        elif regex.search('(?i)(name and surname){e<=2}',line):
+        elif regex.search('(?i)(name and surname){e<=2}',line) and len(p.name) == 0:
             p.name = text[key+1].strip()
 
-        elif regex.search('(?i)(married){e<=2}',line): #this needs fixing
+        elif regex.search('(?i)(married){e<=2}',line) and len(p.maiden) == 0: #this needs fixing
             p.maiden = text[key+1].strip()
 
-        elif regex.search('(?i)(date and place of birth){e<=3}',line):
+        elif regex.search('(?i)(date and place of birth){e<=3}',line) and len(p.dob) == 0:
             p.dob = text[key+1].strip()
 
-        elif regex.search('(?i)(date and place of birth){e<=3}',line):
+        elif regex.search('(?i)(date and place of birth){e<=3}',line) and len(p.pob) == 0:
             p.pob = text[key+2].strip()
 
-        elif regex.search('(?i)(usual address){e<=3}',line):
+        elif regex.search('(?i)(usual address){e<=3}',line) and len(p.usual_address) == 0:
             p.usual_address = text[key+2].strip()
 
-        elif regex.search('(?i)(informant){e<=3}',line):
+        elif regex.search('(?i)(informant){e<=3}',line) and len(p.informant_name) == 0:
             p.informant_name = text[key+1].strip()
 
-        elif regex.search('(?i)(usual address){e<=3}',line):
-            p.informant_address = text[20+key+1].strip()
+        elif regex.search('(?i)(usual address){e<=3}',line) and len(p.informant_address) == 0:
+            p.informant_address = text[+key+1].strip()
 
-        elif regex.search('(?i)(date of registration){e<=3}',line):
+        elif regex.search('(?i)(date of registration){e<=3}',line) and len(p.reg_date) == 0:
             p.reg_date = text[key+1].strip()
 
         
