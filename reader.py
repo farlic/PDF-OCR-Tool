@@ -1,3 +1,6 @@
+#version 1.1
+#1.1 added double page reading, with bug fixes
+
 import re,pdf2image,PIL,pytesseract,time,os,math,sys,regex,openpyxl,csv,time
 from PIL import Image
 from openpyxl import Workbook
@@ -114,7 +117,7 @@ days ={
     "sixteenth":"16",
     "seventeenth":"17",
     "eighteenth":"18",
-    "ninteenth":"19",
+    "nineteenth":"19",
     "twentieth":"20",
     "twenty-first":"21",
     "twenty-second":"22",
@@ -170,7 +173,12 @@ print('pytesseract located\nloading PDF')
 print(f'--------------------------------------------------')
 for file__ in os.listdir():
     if file__.endswith('pdfocr.csv'):
-        os.remove(file__)
+        try:
+            os.remove(file__)
+        except PermissionError:
+            print('please close data csv')
+            exit = input('press enter to exit')
+            sys.exit()
         print('old output purged')
 
 pdfs = [file_ for file_ in os.listdir() if file_.endswith(".pdf") or file_.endswith('.PDF')]
@@ -201,8 +209,15 @@ gender_pattern = re.compile("( (fe)?male)",re.I)
 relative_pattern = re.compile("((bro|mo|fa)?ther|sister|informant|causing the body to be cremated|uncle)",re.I)
 district_pattern = regex.compile('(?i)(registration district|Administrative area){s<=2,d<=2,e<=3}')
 time.sleep(1)
+print('--------------------------------------------------')
+double_scan = input('is this pdf scanned on both sides? y/n ... ')
 
 for index,page in enumerate(pages):
+    if double_scan == 'y':
+        if int(index)%2 != 0:
+            continue
+        else:
+            index = math.floor(int(index)/2)
     p = Person()
 
     try:
@@ -216,7 +231,7 @@ for index,page in enumerate(pages):
         #grab text
         print('text found')
 
-        bad = [",",".",")","(","'"]
+        bad = [",",".",")","(","'","|"]
         for x in bad:
             text = text.replace(x,"")
 
@@ -258,11 +273,14 @@ for index,page in enumerate(pages):
 
                 if regex.search('(?i)(present at death){e<=3}',p.informant_name):
                     p.informant_name = text[key-4].strip()
+                    if not regex.search(r'([A-Z]){2,}\s{s<=2}',p.informant_name):
+                        p.informant_name = text[key-3].strip()
 
             elif regex.search('(?i)(date of registration){e<=3}',line) and len(p.reg_date) == 0:
                 p.reg_date = text[key+1].strip()
 
-            elif regex.search('(?i)(system no){e<=3}',line) and len(p.dri) == 0:
+            elif regex.search('(?i)(system no){d<2,e<=3}',line) and len(p.dri) == 0:
+                time.sleep(5)
                 p.dri = text[key][regex.search(r'(\d){3,}',line).span()[0]:regex.search(r'(\d){3,}',line).span()[1]+1].strip()
             
         #cleaning scraped results
@@ -377,7 +395,9 @@ print(f'--------------------------------------------------')
 if len(error_list)>0:    
     print('pages for manual assessment:')
     print(f"{','.join(error_list)}")
+else:
+    print('no major errors')
 print(f'--------------------------------------------------')
-print('exiting in 5s')
-time.sleep(5)
+print('press enter to exit')
+exit = input()
 sys.exit()
